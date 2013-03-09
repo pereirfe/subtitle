@@ -1,0 +1,17 @@
+1
+00:00:00,500 --> 00:00:01:000
+Oi, eu sou Goku!
+
+2
+00:00:01,500 --> 00:00:02:000
+Kaaaaaah
+Meeeeeeh
+
+3
+00:00:02,500 --> 00:00:03:000
+Haaaaaah
+Meeeeeeh
+
+4
+00:00:03,500 --> 00:00:04:000
+HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!!
