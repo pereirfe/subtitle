@@ -1,41 +1,93 @@
-
+	
     # Basic for handling a .str subtitles
     # Works up to 99h files (its enought, i think..)
 
 import sys
 
+# Auxilia a pular qualquer texto que esteja antes da primeira legenda. 
+# Depois basta ir procurando pela linha em braco.
+def is_one(s):
+	try:
+		x=int(s)
+		if x==1:
+			return True
+		return False
+	except ValueError:
+		return False
+
 def delay_srt(file, time):
-    draft = open('draft.srt', 'w')
-    counter = 1 #current subtitle
-    t1, t2 = sub_time(), sub_time()
+	draft = open('draft.srt', 'w')
+	counter = 1 #current subtitle
+	t1, t2 = sub_time(), sub_time()
     
-    while True:
-        s = file.readline()
-        if not s:
-            print 'DONE!'
-            break
+	# Talvez fazer uma verificao se o arquivo em questao nao tem nada em comum com um arquivo de legenda?
+	
+	# Procura a primeira legenda (pula espacos em branco iniciais)
+	while True:
+		s = file.readline()
+		if (not s) or (is_one(s) == True):
+			break
 
-        draft.write(s)
-        try:
-            x = int(s)                
-        except:
-            continue
+	while True:
+		draft.write(s)			# grava o numero da legenda
+		
+		s = file.readline()		# carrega os tempos
+		#print(s)
 
-        counter += 1
-        s = file.readline()
-        t1.set_time(int(s[0:2]), int(s[3:5]), int(s[6:8]), int(s[9:12])) 
-        t2.set_time(int(s[17:19]), int(s[20:22]), int(s[23:25]), int(s[26:29]))
+		# Faz a conversao de F.Pereire
+		counter += 1
+		t1.set_time(int(s[0:2]), int(s[3:5]), int(s[6:8]), int(s[9:12])) 
+		t2.set_time(int(s[17:19]), int(s[20:22]), int(s[23:25]), int(s[26:29]))
 
-        t1.add_ms(time)
-        t2.add_ms(time)
+		t1.add_ms(time)
+		t2.add_ms(time)
 
-        str_time = t1.strh()+":"+t1.strm()+":"+t1.strs()+","+t1.strms()+" --> " +\
-            t2.strh()+":"+t2.strm()+":"+t2.strs()+","+t2.strms()+"\n"
+		# Cria e grava a string de novo tempo
+		str_time = t1.strh()+":"+t1.strm()+":"+t1.strs()+","+t1.strms()+" --> " +\
+			t2.strh()+":"+t2.strm()+":"+t2.strs()+","+t2.strms()+"\n"
 
-        draft.write(str_time)
-        
+		draft.write(str_time)
 
-    draft.close()
+		# Le e grava ate encontrar uma linha em branco
+		while s.strip():
+			s = file.readline()
+			draft.write(s)
+			
+		# Le o numero da legenda, se houver
+		s = file.readline()
+	
+		# Verifica se acabou
+		if not s:
+			print ('DONE!')
+			break
+
+	
+	'''	# Seu codigo anterior, para usar como referencia.
+	if not s:
+        print ('DONE!')
+        break
+
+    draft.write(s)
+    try:
+        x = int(s)                
+    except:
+        continue
+
+    counter += 1
+    s = file.readline()
+    t1.set_time(int(s[0:2]), int(s[3:5]), int(s[6:8]), int(s[9:12])) 
+    t2.set_time(int(s[17:19]), int(s[20:22]), int(s[23:25]), int(s[26:29]))
+	
+    t1.add_ms(time)
+    t2.add_ms(time)
+
+    str_time = t1.strh()+":"+t1.strm()+":"+t1.strs()+","+t1.strms()+" --> " +\
+        t2.strh()+":"+t2.strm()+":"+t2.strs()+","+t2.strms()+"\n"
+
+    draft.write(str_time)
+	'''
+   
+	draft.close()
 
 class sub_time:
     def __init__(self):
@@ -59,9 +111,9 @@ class sub_time:
             self.__s += 59
             self.__ms += 1000
         
-        self.__s += self.__ms/1000
-        self.__m += self.__s/60
-        self.__h += self.__m/60
+        self.__s += self.__ms//1000
+        self.__m += self.__s//60
+        self.__h += self.__m//60
 
         self.__ms %= 1000
         self.__s %= 60
@@ -73,29 +125,29 @@ class sub_time:
             
     def strh(self):
         if self.__h < 10:
-            return '0'+str(self.__h)
+            return '0'+str(int(self.__h))
         return str(self.__h)
 
     def strm(self):
         if self.__m < 10:
-            return '0'+str(self.__m)
+            return '0'+str(int(self.__m))
         return str(self.__m)
 
     def strs(self):
         if self.__s < 10:
-            return '0'+str(self.__s)
+            return '0'+str(int(self.__s))
         return str(self.__s)
 
     def strms(self):
         if self.__ms < 10:
-            return '00'+str(self.__ms)
+            return '00'+str(int(self.__ms))
         elif self.__ms < 100:
-            return '0'+str(self.__ms)
+            return '0'+str(int(self.__ms))
 
-        return str(self.__ms)
+        return str(int(self.__ms))
 
     def printt(self):
-        print "h:%d - m:%d - s:%d - ms:%d" % (self.__h, self.__m, self.__s, self.__ms) 
+        print ("h:%d - m:%d - s:%d - ms:%d" % (self.__h, self.__m, self.__s, self.__ms)) 
 
 
     
