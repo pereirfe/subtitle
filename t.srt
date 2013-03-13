@@ -1,17 +1,13 @@
 1
-00:00:04,500 --> 00:00:05,000
-Oi, eu sou Goku!
+00:00:14,547 --> 00:00:16,879
+Se trouxerem a m˙sica certa,
+ficar„o famosos.
 
 2
-00:00:05,500 --> 00:00:06,000
-Kaaaaaah
-Meeeeeeh
+00:00:20,154 --> 00:00:21,770
+<i>Nos episÛdios anteriores...</i>
 
 3
-00:00:06,500 --> 00:00:07,000
-Haaaaaah
-Meeeeeeh
-
-4
-00:00:07,500 --> 00:00:08,000
-HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!!
+00:00:21,771 --> 00:00:24,130
+<i>Quero que conheÁam
+o compositor da m˙sica.</i>

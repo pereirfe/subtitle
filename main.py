@@ -15,10 +15,14 @@ def is_one(s):
 		return False
 
 # Talvez fazer uma verificao se o arquivo em questao nao tem nada em comum com um arquivo de legenda?
-def delay_srt(file, time, saveas):
-	draft = open(saveas, 'w')
-	counter = 1 #current subtitle
+# File - Arquivo aberto. Time - Tempo de delay. Saveas - Destino
+def delay_srt(file, time):
+	result=[]
+	counter = 1 				# legenda atual. Eh realmente necessario marcar isso?
 	t1, t2 = sub_time(), sub_time()
+	
+	if not file:				# caso onde arquivo esta vazio
+		return result
 	
 	# Procura a primeira legenda (pula espacos em branco iniciais)
 	while True:
@@ -27,7 +31,7 @@ def delay_srt(file, time, saveas):
 			break
 
 	while True:
-		draft.write(s)			# grava o numero da legenda
+		result.append(s)		# grava o numero da legenda
 		
 		if file:
 			s= file.pop(0)		# carrega os tempos
@@ -44,24 +48,30 @@ def delay_srt(file, time, saveas):
 		str_time = t1.strh()+":"+t1.strm()+":"+t1.strs()+","+t1.strms()+" --> " +\
 			t2.strh()+":"+t2.strm()+":"+t2.strs()+","+t2.strms()+"\n"
 
-		draft.write(str_time)
+		result.append(str_time)
 
 		# Le e grava ate encontrar uma linha em branco ou a lista do arquivo acabar
 		while s.strip() and file:
 			s= file.pop(0)
-			draft.write(s)
+			result.append(s)
 			
-		# Le o numero da legenda, se houver
-		if file:
+		if file:		# Le o numero da legenda, se houver
 			s= file.pop(0)
-		#s = file.readline()
-	
-		# Verifica se acabou
-		if not file:
+		
+		else: 			# se nao houver
 			print ('DONE!')
 			break
    
-	draft.close()
+	return result
+	
+
+# Funaoo para salvar o resultado final em um arquivo.
+# lines - Vetor de strings que representam o arquivo final. saveas - destino.
+def save_file(lines, saveas) :
+	draft = open(saveas, 'w')
+	for x in lines:
+		draft.write(x)
+	
 
 class sub_time:
     def __init__(self):
@@ -124,7 +134,7 @@ class sub_time:
         print ("h:%d - m:%d - s:%d - ms:%d" % (self.__h, self.__m, self.__s, self.__ms)) 
 
 
-    
+
     ####################### MAIN
 if __name__ == "__main__":
 
@@ -139,5 +149,8 @@ if __name__ == "__main__":
 		if sys.argv[4] == 's':
 			time *= 1000
 
-		delay_srt(file_variable, time, sys.argv[1])
+		#delay_srt(file_variable, time, sys.argv[1])
+		delayed=delay_srt(file_variable, time)
+		save_file(delayed, sys.argv[1])
+		
     # else if blalbla :
