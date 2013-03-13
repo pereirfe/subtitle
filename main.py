@@ -1,4 +1,3 @@
-	
     # Basic for handling a .str subtitles
     # Works up to 99h files (its enought, i think..)
 
@@ -15,24 +14,23 @@ def is_one(s):
 	except ValueError:
 		return False
 
-def delay_srt(file, time):
-	draft = open('draft.srt', 'w')
+# Talvez fazer uma verificao se o arquivo em questao nao tem nada em comum com um arquivo de legenda?
+def delay_srt(file, time, saveas):
+	draft = open(saveas, 'w')
 	counter = 1 #current subtitle
 	t1, t2 = sub_time(), sub_time()
-    
-	# Talvez fazer uma verificao se o arquivo em questao nao tem nada em comum com um arquivo de legenda?
 	
 	# Procura a primeira legenda (pula espacos em branco iniciais)
 	while True:
-		s = file.readline()
+		s= file.pop(0)
 		if (not s) or (is_one(s) == True):
 			break
 
 	while True:
 		draft.write(s)			# grava o numero da legenda
 		
-		s = file.readline()		# carrega os tempos
-		#print(s)
+		if file:
+			s= file.pop(0)		# carrega os tempos
 
 		# Faz a conversao de F.Pereire
 		counter += 1
@@ -48,44 +46,20 @@ def delay_srt(file, time):
 
 		draft.write(str_time)
 
-		# Le e grava ate encontrar uma linha em branco
-		while s.strip():
-			s = file.readline()
+		# Le e grava ate encontrar uma linha em branco ou a lista do arquivo acabar
+		while s.strip() and file:
+			s= file.pop(0)
 			draft.write(s)
 			
 		# Le o numero da legenda, se houver
-		s = file.readline()
+		if file:
+			s= file.pop(0)
+		#s = file.readline()
 	
 		# Verifica se acabou
-		if not s:
+		if not file:
 			print ('DONE!')
 			break
-
-	
-	'''	# Seu codigo anterior, para usar como referencia.
-	if not s:
-        print ('DONE!')
-        break
-
-    draft.write(s)
-    try:
-        x = int(s)                
-    except:
-        continue
-
-    counter += 1
-    s = file.readline()
-    t1.set_time(int(s[0:2]), int(s[3:5]), int(s[6:8]), int(s[9:12])) 
-    t2.set_time(int(s[17:19]), int(s[20:22]), int(s[23:25]), int(s[26:29]))
-	
-    t1.add_ms(time)
-    t2.add_ms(time)
-
-    str_time = t1.strh()+":"+t1.strm()+":"+t1.strs()+","+t1.strms()+" --> " +\
-        t2.strh()+":"+t2.strm()+":"+t2.strs()+","+t2.strms()+"\n"
-
-    draft.write(str_time)
-	'''
    
 	draft.close()
 
@@ -156,13 +130,14 @@ if __name__ == "__main__":
 
     # argument style: ./sub file.str <delay|...> <+|->time <ms|s>
 
-    file = open(sys.argv[1], 'r') #Get filename as first argument and open it
+	file_open = open(sys.argv[1], 'r')
+	file_variable = file_open.readlines()			#Lista de linhas do arquivo
 
-    if sys.argv[2] == 'delay':
+	if sys.argv[2] == 'delay':
 
-        time = int(sys.argv[3]) #Get time
-        if sys.argv[4] == 's':
-            time *= 1000
+		time = int(sys.argv[3]) #Get time
+		if sys.argv[4] == 's':
+			time *= 1000
 
-        delay_srt(file, time)
+		delay_srt(file_variable, time, sys.argv[1])
     # else if blalbla :
