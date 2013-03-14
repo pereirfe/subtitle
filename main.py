@@ -79,24 +79,66 @@ def load_file(path):
 	return lines
 	
 
-# Adiciona uma legenda "line" nova na posicao "pos" do arquivo "subfile" com tempo inicial "ti" e tempo final "tf". Arruma as legendas seguintes.
+# Adiciona uma legenda "lines" nova na posicao "pos" do arquivo "subfile" com tempo inicial "ti" e tempo final "tf". Arruma as legendas seguintes.
 # subfile -> lista de string || line -> string || pos -> int || ti = sub_time() || tf = sub_time() || retorna Mod, lista com as strings
-'''def add_sub(subfile, line, pos, ti, tf):
+def add_sub(subfile, lines, pos, ti, tf):
 	Mod = []
+	print("addsub")
 	
 	while True:					# pula bobagens
-		s=file.pop(0)
+		s=subfile.pop(0)
 		if (not s) or (is_this_k(s,1) == True):
 			break
 			
-	while True:					# pula ate a pos-1 legenda.
-		s=file.pop(0)
-		if (not s) or !(is_this_k(s,pos-1))
+	while True and (not pos==1):						# pula ate a pos-1 legenda. pos-1 pois precisa tratar o caso onde eh a ultima legenda. 
+		if subfile and not (is_this_k(s,pos-1)):		# verifica se a legenda acabou ou se chegou a pos-1 (o (not pos==1) conserta na primeira legenda)
+			print("isnotthisk")
+			print(s)
+			print(pos-1)
 			Mod.append(s)
-'''			
+			
+		elif not s:
+			return []			# Nao tem pelo menos pos-1 legendas
+			
+		else:					# Se chegou aqui a legenda de pos-1 existe
+			Mod.append(s)		# append do numero pos-1
+			s=subfile.pop(0)	# pop do tempo do numero pos-1
+			Mod.append(s)		# append do tempo
+			
+			s=subfile.pop(0)	# pega trecho da legenda
+			while s.strip() and subfile:
+				Mod.append(s)	# vai passando ate acabar
+				s=subfile.pop(0)
+			
+			Mod.append("\n") 	# insere a blank line
+			
+			break
+			
+		s=subfile.pop(0)
 	
+	# Neste ponto, foi colocado a legenda pos-1.
+	counter = pos+1
+	Mod.append(str(pos))		# Adiciona a posicao
+	str_time = ti.format_print() + " --> " + tf.format_print() + "\n"
+	Mod.append(str_time)
+	for w in lines:				# Adiciona as linhas
+		Mod.append(w)
+	Mod.append("\n")
 	
-		
+	while subfile:				# Coloca o resto, respeitando a nova contagem
+		s=subfile.pop(0)
+		if not s:				# Resumo: Sai pegando todo mundo ate acabar, troca o numero por counter
+			break
+		Mod.append(str(counter))
+		counter=counter+1		# e atualiza o counter para cada legenda
+		s=subfile.pop(0)
+		while s.strip() and subfile:
+			Mod.append(s)
+			s=subfile.pop(0)
+		Mod.append(s)
+
+	return Mod					# retorna a lista modificada
+	
 	
 class sub_time:
 	def __init__(self):
@@ -169,8 +211,17 @@ class sub_time:
 if __name__ == "__main__":
 
     # argument style: ./sub file.str <delay|...> <+|->time <ms|s>
-
-	file_variable = load_file(sys.argv[1])
+															# Novo formato de funcoes, veja:
+	file_variable = load_file(sys.argv[1])					# carrega o arquivo atraves da funcaozinha.
+	
+	t1, t2 = sub_time(), sub_time()							# tempos para exemplo do add_sub
+	t1.set_time(1,1,1,1)			
+	t2.set_time(2,2,2,2)
+	
+	nova = ["caramba", "caramba2"]							# linha de legenda que sera adicionada
+	
+	adicionou=add_sub(file_variable,nova, 1, t1, t2)		# chama e retorna na variavel, como tem que ser \o
+	print(adicionou)										# printa pra ver. Sucesso?
 
 	if sys.argv[2] == 'delay':
 
@@ -178,8 +229,7 @@ if __name__ == "__main__":
 		if sys.argv[4] == 's':
 			time *= 1000
 
-		#delay_srt(file_variable, time, sys.argv[1])
-		delayed=delay_srt(file_variable, time)
-		save_file(delayed, sys.argv[1])
+		delayed=delay_srt(file_variable, time)				# Faz o delay
+		save_file(delayed, sys.argv[1])						# Salva arquivo
 		
     # else if blalbla :
