@@ -5,10 +5,10 @@ import sys
 
 # Auxilia a pular qualquer texto que esteja antes da primeira legenda. 
 # Depois basta ir procurando pela linha em braco.
-def is_one(s):
+def is_this_k(s,k):
 	try:
 		x=int(s)
-		if x==1:
+		if x==k:
 			return True
 		return False
 	except ValueError:
@@ -27,7 +27,7 @@ def delay_srt(file, time):
 	# Procura a primeira legenda (pula espacos em branco iniciais)
 	while True:
 		s= file.pop(0)
-		if (not s) or (is_one(s) == True):
+		if (not s) or (is_this_k(s,1) == True):
 			break
 
 	while True:
@@ -45,8 +45,7 @@ def delay_srt(file, time):
 		t2.add_ms(time)
 
 		# Cria e grava a string de novo tempo
-		str_time = t1.strh()+":"+t1.strm()+":"+t1.strs()+","+t1.strms()+" --> " +\
-			t2.strh()+":"+t2.strm()+":"+t2.strs()+","+t2.strms()+"\n"
+		str_time = t1.format_print() + " --> " + t2.format_print() + "\n"
 
 		result.append(str_time)
 
@@ -79,65 +78,90 @@ def load_file(path):
 	lines = file_open.readlines()			#Lista de linhas do arquivo
 	return lines
 	
+
+# Adiciona uma legenda "line" nova na posicao "pos" do arquivo "subfile" com tempo inicial "ti" e tempo final "tf". Arruma as legendas seguintes.
+# subfile -> lista de string || line -> string || pos -> int || ti = sub_time() || tf = sub_time() || retorna Mod, lista com as strings
+'''def add_sub(subfile, line, pos, ti, tf):
+	Mod = []
+	
+	while True:					# pula bobagens
+		s=file.pop(0)
+		if (not s) or (is_this_k(s,1) == True):
+			break
+			
+	while True:					# pula ate a pos-1 legenda.
+		s=file.pop(0)
+		if (not s) or !(is_this_k(s,pos-1))
+			Mod.append(s)
+'''			
+	
+	
+		
+	
 class sub_time:
-    def __init__(self):
-        self.__h = 0
-        self.__m = 0
-        self.__s = 0
-        self.__ms = 0
+	def __init__(self):
+		self.__h = 0
+		self.__m = 0
+		self.__s = 0	
+		self.__ms = 0
 
-    def set_time(self, h, m, s, ms):
-        self.__h = h
-        self.__m = m
-        self.__s = s
-        self.__ms = ms
-        return
-
-    def add_ms(self, ms):
-        self.__ms += ms
-        if self.__ms < 0:
-            self.__h -= 1
-            self.__m += 59
-            self.__s += 59
-            self.__ms += 1000
+	def set_time(self, h, m, s, ms):
+		self.__h = h
+		self.__m = m
+		self.__s = s
+		self.__ms = ms
+		return
+		
+	def add_ms(self, ms):
+		self.__ms += ms
+		if self.__ms < 0:
+			self.__h -= 1
+			self.__m += 59
+			self.__s += 59
+			self.__ms += 1000
         
-        self.__s += self.__ms//1000
-        self.__m += self.__s//60
-        self.__h += self.__m//60
+		self.__s += self.__ms//1000
+		self.__m += self.__s//60
+		self.__h += self.__m//60
 
-        self.__ms %= 1000
-        self.__s %= 60
-        self.__m %= 60
-        return
+		self.__ms %= 1000
+		self.__s %= 60
+		self.__m %= 60
+		return
         
-    def get_time(self):
-        return [self.__h,self.__m,self.__s,self.__ms]
+	def get_time(self):
+		return [self.__h,self.__m,self.__s,self.__ms]
             
-    def strh(self):
-        if self.__h < 10:
-            return '0'+str(int(self.__h))
-        return str(self.__h)
+	def strh(self):
+		if self.__h < 10:
+			return '0'+str(int(self.__h))
+		return str(self.__h)
 
-    def strm(self):
-        if self.__m < 10:
-            return '0'+str(int(self.__m))
-        return str(self.__m)
+	def strm(self):
+		if self.__m < 10:
+			return '0'+str(int(self.__m))
+		return str(self.__m)
 
-    def strs(self):
-        if self.__s < 10:
-            return '0'+str(int(self.__s))
-        return str(self.__s)
+	def strs(self):
+		if self.__s < 10:
+			return '0'+str(int(self.__s))
+		return str(self.__s)
 
-    def strms(self):
-        if self.__ms < 10:
-            return '00'+str(int(self.__ms))
-        elif self.__ms < 100:
-            return '0'+str(int(self.__ms))
+	def strms(self):
+		if self.__ms < 10:
+			return '00'+str(int(self.__ms))
+		elif self.__ms < 100:
+			return '0'+str(int(self.__ms))
 
-        return str(int(self.__ms))
+		return str(int(self.__ms))
 
-    def printt(self):
-        print ("h:%d - m:%d - s:%d - ms:%d" % (self.__h, self.__m, self.__s, self.__ms)) 
+	def format_print(self):	
+		Tempo = self.strh()+":"+self.strm()+":"+self.strs()+","+self.strms()
+		return Tempo
+
+	def printt(self):
+		print ("h:%d - m:%d - s:%d - ms:%d" % (self.__h, self.__m, self.__s, self.__ms)) 
+
 
 
 

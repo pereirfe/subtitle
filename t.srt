@@ -1,13 +1,13 @@
 1
-00:00:18,547 --> 00:00:20,879
+00:00:24,547 --> 00:00:26,879
 Se trouxerem a m˙sica certa,
 ficar„o famosos.
 
 2
-00:00:24,154 --> 00:00:25,770
+00:00:30,154 --> 00:00:31,770
 <i>Nos episÛdios anteriores...</i>
 
 3
-00:00:25,771 --> 00:00:28,130
+00:00:31,771 --> 00:00:34,130
 <i>Quero que conheÁam
 o compositor da m˙sica.</i>
