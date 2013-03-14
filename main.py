@@ -15,7 +15,7 @@ def is_one(s):
 		return False
 
 # Talvez fazer uma verificao se o arquivo em questao nao tem nada em comum com um arquivo de legenda?
-# File - Arquivo aberto. Time - Tempo de delay. Saveas - Destino
+# File - Arquivo aberto || Time - Tempo de delay || Saveas - Destino
 def delay_srt(file, time):
 	result=[]
 	counter = 1 				# legenda atual. Eh realmente necessario marcar isso?
@@ -65,14 +65,20 @@ def delay_srt(file, time):
 	return result
 	
 
-# Funaoo para salvar o resultado final em um arquivo.
-# lines - Vetor de strings que representam o arquivo final. saveas - destino.
+# Funcaoo para salvar o resultado final em um arquivo.
+# lines - Vetor de strings que representam o arquivo final || saveas - destino.
 def save_file(lines, saveas) :
 	draft = open(saveas, 'w')
 	for x in lines:
 		draft.write(x)
+		
+# Funcao para carregar o estado inicial de um dado arquivo de legenda (que pode vir a nao ser .srt no futuro). 
+# path - caminho do arquivo. || linhas - lista com vetor resultante.
+def load_file(path): 
+	file_open = open(path, 'r')
+	lines = file_open.readlines()			#Lista de linhas do arquivo
+	return lines
 	
-
 class sub_time:
     def __init__(self):
         self.__h = 0
@@ -140,8 +146,7 @@ if __name__ == "__main__":
 
     # argument style: ./sub file.str <delay|...> <+|->time <ms|s>
 
-	file_open = open(sys.argv[1], 'r')
-	file_variable = file_open.readlines()			#Lista de linhas do arquivo
+	file_variable = load_file(sys.argv[1])
 
 	if sys.argv[2] == 'delay':
 
